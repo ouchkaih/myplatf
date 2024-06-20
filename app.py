@@ -1,47 +1,25 @@
-from flask import Flask, render_template, request, url_for, redirect, flash
+from flask import Flask, render_template, request, url_for, redirect, flash, session
 from werkzeug.utils import secure_filename
-import openai
 import os
-from pdf_processing import extract_text_from_pdf, generate_case_study as ai_generate_case_study
-import click
-from flask.cli import with_appcontext
-import PyPDF2
-from flask_sqlalchemy import SQLAlchemy
-import tiktoken
+from auth import auth as auth_blueprint
+from models import db, Project
+from forums import forums
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 app.secret_key = 'apikey'
 app.config['UPLOAD_FOLDER'] = 'uploads/'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///projects.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///projects3.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-openai.api_key = 'apikey'
+app.register_blueprint(auth_blueprint, url_prefix='/auth')
+app.register_blueprint(forums, url_prefix='/forums')
 
-projects = []
+db.init_app(app)
 
-class Project(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(150), nullable=False)
-    full_name = db.Column(db.String(150), nullable=False)
-    file_path = db.Column(db.String(200), nullable=False)
-    case_study = db.Column(db.Text, nullable=False)
-
-# Fonction pour compter les tokens
-def count_tokens(messages, model="gpt-3.5-turbo"):
-    encoding = tiktoken.encoding_for_model(model)
-    num_tokens = 0
-    for message in messages:
-        num_tokens += len(encoding.encode(message["content"]))
-    return num_tokens
-
-# Fonction pour tronquer le texte
-def truncate_text(text, max_tokens, model="gpt-3.5-turbo"):
-    encoding = tiktoken.encoding_for_model(model)
-    tokens = encoding.encode(text)
-    if len(tokens) > max_tokens:
-        tokens = tokens[:max_tokens]
-    return encoding.decode(tokens)
-    
+# Context processor to make session data available in all templates
+@app.context_processor
+def inject_user():
+    username = session.get('username')
+    return dict(username=username)
 
 @app.route('/favicon.ico')
 def favicon():
@@ -49,11 +27,11 @@ def favicon():
 
 @app.route('/')
 def home():
-    return render_template('accueil.html')
+    return render_template('acceuil.html')
 
-@app.route('/accueil')
+@app.route('/acceuil')
 def accueil():
-    return render_template('accueil.html')
+    return render_template('acceuil.html')
 
 @app.route('/forum')
 def forum():
@@ -107,11 +85,8 @@ def businesscase2():
 def businesscase3():
     return render_template('businesscase3.html')
 
-
-
 @app.route('/energie', methods=['GET', 'POST'])
 def energie():
-    global projects
     if request.method == 'POST':
         if 'file-upload' not in request.files:
             flash('Aucun fichier sélectionné', 'error')

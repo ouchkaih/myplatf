@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Forum Details</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/acceuil.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forum_details.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+</head>
+<body>
+    {% include 'header.html' %}
+
+    <div class="container-wrapper">
+        <div class="container">
+            <h1>{{ forum.title }}</h1>
+            <p>{{ forum.text }}</p>
+            <p>Views: {{ forum.views_count }}</p>
+            
+            <div class="comment-section">
+                <h3 class="comment-title">Comments</h3>
+                <ul>
+                    {% for comment in forum.comments %}
+                    <li class="comment">
+                        <img src="https://th.bing.com/th/id/R.1c75547f74d8aa7720a495f208c9b1c8?rik=cm6kaKgbGRM6Cg&pid=ImgRaw&r=0" alt="User profile picture">
+                        <div class="comment-body">
+                            <div class="comment-header">
+                                <span class="comment-user">{{ comment.user.username }}</span>
+                                <span class="comment-date" data-date="{{ comment.date_added }}"></span>
+                            </div>
+                            <p>{{ comment.text }}</p>
+                            
+                            <p>
+                                <a href="{{ url_for('forums.add_reply', forum_id=forum.id, comment_id=comment.id) }}">Reply</a>
+                                {% if comment.replies|length > 0 %}
+                                    <a class="btn-show-replies" href="" data-toggle="collapse" data-target="#replies-{{ comment.id }}" aria-expanded="false" aria-controls="replies-{{ comment.id }}">
+                                        Show Replies
+                                    </a>
+                                {% endif %}
+                            </p>
+                            
+                            <div class="collapse reply-section" id="replies-{{ comment.id }}">
+                                <ul class="p-0">
+                                    {% for reply in comment.replies %}
+                                    <li class="reply">
+                                        <img src="https://th.bing.com/th/id/R.1c75547f74d8aa7720a495f208c9b1c8?rik=cm6kaKgbGRM6Cg&pid=ImgRaw&r=0" alt="User profile picture">
+                                        <div class="comment-body">
+                                            <div class="comment-header">
+                                                <span class="comment-user">{{ reply.user.username }}</span>
+                                                <span class="comment-date" data-date="{{ reply.date_added }}"></span>
+                                            </div>
+                                            <p>{{ reply.text }}</p>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="container-wrapper">
+                <a class="btn-add-comment" href="{{ url_for('forums.add_comment', forum_id=forum.id) }}">Add Comment</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var dateElements = document.querySelectorAll('.comment-date');
+            dateElements.forEach(function(element) {
+                var date = element.getAttribute('data-date');
+                console.log("Original Date:", date); 
+                element.textContent = moment.utc(date).fromNow();
+            });
+        });
+    </script>
+</body>
+</html>
