@@ -1,0 +1,29 @@
+.underline-none{ 
+    text-decoration: none;
+}
+
+
+.forum-title{ 
+    color: black !important;
+}
+
+
+.forum-user{
+    color: gray !important;
+}
+
+
+.container-wrapper{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+
+.add-forum-btn {
+    border: .4px solid green;
+    padding: 12px;
+    border-radius: 4px;
+    color: green;
+}
+

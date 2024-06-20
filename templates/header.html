@@ -1,0 +1,16 @@
+
+<header>
+    <div class="header">
+        <img src="https://i.ibb.co/yspdyT8/centrale-de-cas-high-resolution-logo-transparent-1.png" alt="Centrale de Cas Logo" class="header-logo">
+        <div class="nav-links">
+            <a href="{{ url_for('accueil') }}" class="header-link">Accueil</a>
+            <a href="{{ url_for('forums.list_forums') }}" class="header-link">Forum de Discussion</a>
+            {% if username %}
+              <p class="header-link" style="margin: 0px;">Logged in as {{ username }}</p>
+              <a class="header-link" href="{{ url_for('auth.logout') }}">Déconnexion</a>
+            {% else %}
+              <a class="header-link" href="{{ url_for('auth.login') }}">Login</a>  <a class="header-link" href="{{ url_for('auth.signup') }}">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
