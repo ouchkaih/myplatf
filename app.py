@@ -3,13 +3,17 @@ from werkzeug.utils import secure_filename
 import openai
 import os
 from auth import auth as auth_blueprint
-from models import db, CaseStudy, Comment, User
+from models import db, CaseStudy, Comment, User, Project
 from forums import forums
 from flask_login import UserMixin, LoginManager, current_user, login_user, logout_user
 from ia import extract_text_from_pdf, generate_case_study as ai_generate_case_study , generate_quiz
 from forms import CaseStudyCreationForm, CommentCreationForm
 import tiktoken
 from dotenv import load_dotenv
+
+from flask_sqlalchemy import SQLAlchemy
+import sqlalchemy as sa
+import sqlalchemy.orm as so
 load_dotenv()
 
 app = Flask(__name__, template_folder='templates')
@@ -21,6 +25,7 @@ app.register_blueprint(auth_blueprint, url_prefix='/auth')
 app.register_blueprint(forums, url_prefix='/forums')
 
 db.init_app(app)
+login_manager = LoginManager(app)
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
@@ -42,7 +47,6 @@ def truncate_text(text, max_tokens, model="gpt-3.5-turbo"):
 
 
 
-projects = []
 # Context processor to make session data available in all templates
 @app.context_processor
 def inject_user():
@@ -81,9 +85,13 @@ def connexion():
 def inscription():
     return render_template('inscription.html')
 
-@app.route('/quiz')
-def quiz():
-    return render_template('quiz.html')
+@app.route('/quiz/<int:id>')
+def quiz(id):
+    if not current_user.is_authenticated:
+        flash('Veuillez vous connecter', 'error')
+    case_study = db.session.scalar(sa.select(Project).where(Project.id == id))
+
+    return render_template('quiz.html', id=id, case_study=case_study)
 
 @app.route('/quiz1')
 def quiz1():
@@ -113,12 +121,19 @@ def businesscase2():
 def businesscase3():
     return render_template('businesscase3.html')
 
-LoginManager.user_loader
+@login_manager.user_loader
 def load_user(id):
     return db.session.get(User, int(id))
 
+
+def get_all_projects():
+    with app.app_context():
+        return Project.query.all()
+
 @app.route('/energie', methods=['GET', 'POST'])
 def energie():
+
+    projects = get_all_projects()
     if request.method == 'POST':
         if 'file-upload' not in request.files:
             flash('Aucun fichier sélectionné', 'error')
@@ -140,16 +155,16 @@ def energie():
             try:
                 pdf_text = extract_text_from_pdf(filepath)
                 case_study = ai_generate_case_study(pdf_text)
-                
-                project_id = len(projects)
-                project = {
-                    'id': project_id,
-                    'title': project_title,
-                    'full_name': full_name,
-                    'file_path': filename,
-                    'case_study': case_study
-                }
-                projects.append(project)
+
+                # Save project details to the database
+                new_project = Project(
+                    title=project_title,
+                    full_name=full_name,
+                    file_path=filename,
+                    case_study=case_study
+                )
+                db.session.add(new_project)
+                db.session.commit()
                 
                 flash('Étude de cas générée avec succès', 'success')
                 return redirect(url_for('energie'))
@@ -164,24 +179,29 @@ def energie():
 
 @app.route('/casia/<int:project_id>')
 def casia(project_id):
-    if project_id < len(projects):
-        case_study = projects[project_id]['case_study']
-        return render_template('casia.html', case_study=case_study)
+    projects = get_all_projects()
+    if 0 < len(projects):
+        project = next((proj for proj in projects if proj.id == project_id), None)
+        if project:
+            case_study = project.case_study
+            return render_template('casia.html', case_study=case_study)
+        else:
+            flash("Projet non trouvé", 'error')
+            return redirect(url_for('energie'))
     else:
-        flash("Projet non trouvé", 'error')
+        flash("Aucun projet disponible", 'error')
         return redirect(url_for('energie'))
 
-@app.route('/delete_project/<int:project_id>', methods=['POST'])
-def delete_project(project_id):
-    global projects
-    if project_id < len(projects):
-        del projects[project_id]
-        # Re-index the remaining projects
-        for i in range(len(projects)):
-            projects[i]['id'] = i
-        flash('Projet supprimé avec succès', 'success')
-    else:
-        flash('Projet non trouvé', 'error')
+@app.route('/delete_project/<int:id>', methods=['POST'])
+def delete_project(id):
+    project = Project.query.get_or_404(id)
+    # if project.author_id != current_user.id:
+    #     flash('Vous ne pouvez pas supprimer ce projet.', 'error')
+    #     return redirect(url_for('energie'))
+    
+    db.session.delete(project)
+    db.session.commit()
+    flash('Projet supprimé avec succès.', 'success')
     return redirect(url_for('energie'))
 
 
@@ -266,11 +286,14 @@ def take_quiz(id):
 
 @app.route('/case-study/<int:id>/take-quiz/questions')
 def quiz_questions(id):
-    if not current_user.is_authenticated:
+    if not current_user:
         flash('Veuillez vous connecter', 'error')
 
-    study = db.session.scalar(sa.select(CaseStudy).where(CaseStudy.id == id))
-    return generate_quiz(study.content)
+    study = db.session.scalar(sa.select(Project).where(Project.id == id))
+    if study is None:
+        return "Study not found f"
+
+    return generate_quiz(study.case_study)
 
 if __name__ == "__main__":
     with app.app_context():

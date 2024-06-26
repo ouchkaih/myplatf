@@ -65,5 +65,4 @@ class CaseStudy(db.Model):
     date_posted = db.Column(db.DateTime, default=datetime.utcnow)
     tag = db.Column(db.String(256))
     content = db.Column(db.String(1024))
-    comments = db.relationship('Comment', backref='commented_post')
 
