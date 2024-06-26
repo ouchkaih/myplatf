@@ -1,46 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Forums List</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/acceuil.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/forum.css') }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+{% extends "index.html" %}
 
-    <style>
-        
-        .container {
-            width: 80%;
-            max-width: 800px;
-            margin-top: 20px;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            background-color: white;
-            padding: 20px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        li h3 {
-            margin: 0;
-        }
-        li img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body>
-    {% include 'header.html' %}
+{% block title %}Forums List{% endblock %}
+
+{% block content %}
+
 
     <div class="container-wrapper">
         <div class="container">
@@ -62,5 +25,6 @@
             </div>
         </div>  
     </div>
-</body>
-</html>
+
+
+{% endblock %}

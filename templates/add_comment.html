@@ -1,51 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Comment</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/acceuil.css') }}">
 
-    <style>
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            width: 400px;
-            margin: 30px 0px;
-        }
+{% extends "index.html" %}
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        form p {
-            margin: 10px 0;
-        }
-        form input[type="file"], form textarea {
-            width: 95%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            color: black !important;
-            font-size: 20px !important;
-        }
+{% block title %}Ajouter commentaire{% endblock %}
 
-        form input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
+{% block content %}
 
-
-    {% include 'header.html' %}
     <div class="container-wrapper">
         <div class="container">
             <h2>Add Comment</h2>
@@ -60,5 +19,4 @@
         </div>
     </div>
 
-</body>
-</html>
+{% endblock %}

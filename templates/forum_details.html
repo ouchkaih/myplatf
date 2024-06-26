@@ -1,16 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Forum Details</title>
-    <!-- Include Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/acceuil.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/forum_details.css') }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+{% extends "index.html" %}
 
-</head>
-<body>
-    {% include 'header.html' %}
+{% block title %}{{ forum.title }}{% endblock %}
+
+{% block content %}
 
     <div class="container-wrapper">
         <div class="container">
@@ -68,20 +60,4 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var dateElements = document.querySelectorAll('.comment-date');
-            dateElements.forEach(function(element) {
-                var date = element.getAttribute('data-date');
-                console.log("Original Date:", date); 
-                element.textContent = moment.utc(date).fromNow();
-            });
-        });
-    </script>
-</body>
-</html>
+{% endblock %}

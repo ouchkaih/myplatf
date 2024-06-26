@@ -1,14 +1,43 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Étude de Cas Générée</title>
-    
-    <!-- Vous pouvez ajouter un lien vers une feuille de style pour personnaliser le look -->
-</head>
-<body>
+
+{% extends "index.html" %}
+
+{% block title %}Études de Cas{% endblock %}
+
+{% block content %}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background: #0056b3;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background: #222;
+            color: white;
+        }
+        article {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+    </style>
+
+
     <header>
         <h1>Étude de Cas</h1>
     </header>
@@ -20,7 +49,5 @@
     <footer>
         <p>© 2024 Centrale de Cas. Tous droits réservés.</p>
     </footer>
-    
-    <!-- Inclure des scripts JS si nécessaire -->
-</body>
-</html>
+
+{% endblock %}

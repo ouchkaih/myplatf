@@ -1,48 +1,10 @@
-<!DOCTYPE html>
-<html class="no-js" lang="en">
+{% extends "index.html" %}
 
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>Secteurs - Centrale de Cas</title>
-    <meta name="description" content="Explorez les différents secteurs avec nos études de cas détaillées." />
-    <meta name="author" content="YourName" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="accueil.css">
-    <script src="js/libs/modernizr-2.0.6.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/energie.css') }}">
-    <style>
-        .delete-case {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: red;
-            color: white;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-        }
+{% block title %}Secteurs - Centrale de Cas{% endblock %}
 
-        .sector {
-            position: relative;
-            padding: 20px;
-            margin: 20px 0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <img src="https://i.ibb.co/yspdyT8/centrale-de-cas-high-resolution-logo-transparent-1.png" alt="Centrale de Cas Logo" class="header-logo">
-        <div class="nav-links">
-            <a href="{{ url_for('accueil') }}" class="header-link">Accueil</a>
-            <a href="{{ url_for('forum') }}" class="header-link">Forum de Discussion</a>
-            <a href="{{ url_for('connexion') }}" class="header-link">Déconnexion</a>
-        </div>
-    </div>
+{% block content %}
+
+
     <div class="introduction">
         <i class="fa fa-lightbulb-o"></i> Découvrez nos études de cas sur l'innovation énergétique!
     </div>
@@ -267,5 +229,5 @@
         };
     </script>
     <script src="https://www.chatbase.co/embed.min.js" defer></script>
-</body>
-</html>
+
+{% endblock %}

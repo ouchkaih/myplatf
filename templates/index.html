@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="description" content="Centrale de Cas offers customizable templates based on modern standards to kick-start your projects efficiently." />
+    <meta name="author" content="Your Name" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/acceuil.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forum_details.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forum.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/comments.css') }}">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/energie.css') }}">
+</head>
+  <body>
+    {% include 'header.html' %}
+    
+    <!-- {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-dark m-3" role="alert">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %} -->
+
+    {% block content %}{% endblock %}
+
+
+    {% include 'footer.html' %}
+
+    <script>
+      window.embeddedChatbotConfig = {
+        chatbotId: "IbeEBj8NpfRvA1-BPlXTE",
+        domain: "www.chatbase.co"
+      };
+    </script>
+    <script src="https://www.chatbase.co/embed.min.js" defer></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')
+    </script>
+  </body>
+</html>
