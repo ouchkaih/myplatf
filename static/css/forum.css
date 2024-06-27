@@ -37,21 +37,24 @@ h1 {
     text-align: center;
     margin-bottom: 20px;
 }
-ul {
+.forum-container ul {
     list-style-type: none;
     padding: 0;
 }
-li {
+li.forum-container {
     background-color: white;
     padding: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 33px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-li h3 {
+.forum-container li h3 {
     margin: 0;
 }
-li img {
+.forum-container li img {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
@@ -95,4 +98,37 @@ form input[type="submit"] {
 }
 form input[type="submit"]:hover {
     background-color: #45a049;
+}
+
+.forum-container a {
+    width: 100%;
+}
+
+
+.forum-container a:hover {
+    text-decoration: none;
+}
+
+
+.forum-container {
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.forum-container:hover {
+    box-shadow: 2px 6px 10px rgba(0, 0, 0, 0.1);
+    translate: inherit;
+    transform: translate(0, -5px); 
+}
+
+
+.delete-forum-btn {
+    border: none;
+    background: none;
+    font-size: 30px;
+}
+
+
+
+.delete-forum-btn:hover {
+    color: red;
 }

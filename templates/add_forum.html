@@ -4,6 +4,7 @@
 
 {% block content %}
 
+ <div>
     <div class="container-wrapper">
         <div class="container">
             <h2>Add New Forum</h2>
@@ -12,14 +13,16 @@
                 <div>
                     {{ form.title.label }}<br>
                     {{ form.title(size=50) }}
-                <divp>
+                <div>
                 <div>
                     {{ form.text.label }}<br>
                     {{ form.text(rows=10, cols=50) }}
                 </div>
-                <div>{{ form.submit() }}</di>
+                <div>{{ form.submit() }}</div>
             </form>
         </div>
     </div>
+</div>
+ </div>
 
 {% endblock %}

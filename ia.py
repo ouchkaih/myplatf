@@ -8,7 +8,7 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
 # Fonction pour compter les tokens
-def count_tokens(messages, model="gpt-3.5-turbo"):
+def count_tokens(messages, model="gpt-4o"):
     encoding = tiktoken.encoding_for_model(model)
     num_tokens = 0
     for message in messages:
@@ -16,7 +16,7 @@ def count_tokens(messages, model="gpt-3.5-turbo"):
     return num_tokens
 
 # Fonction pour tronquer le texte
-def truncate_text(text, max_tokens, model="gpt-3.5-turbo"):
+def truncate_text(text, max_tokens, model="gpt-4o"):
     encoding = tiktoken.encoding_for_model(model)
     tokens = encoding.encode(text)
     if len(tokens) > max_tokens:
@@ -60,7 +60,7 @@ def generate_case_study(text):
 
         # Appel API OpenAI pour générer l'étude de cas
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o",
             messages=messages
         )
 
@@ -71,7 +71,7 @@ def generate_case_study(text):
 
 def generate_quiz(text):
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
         messages=[
             {"role": "user", "content": f"""À partit de l'étude de cas donnée, générer un quiz sous format JavaScript en définissant une variable applée `MCQS`.
             `MCQS` est un tableau d'object contenant les clés suivantes (et rien d'autre):

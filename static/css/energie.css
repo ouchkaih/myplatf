@@ -304,3 +304,19 @@
             border: 1px solid #ccc;
             border-radius: 8px;
         }
+
+
+        .search-container {
+            /* margin: 5% auto; */
+            padding: 20px;
+            border-radius: 10px;
+            /* width: 95%; */
+            display: flex;
+            justify-content: center;
+        }
+
+
+        .search-container .container { 
+            box-shadow: none;
+            background-color: #f2f2f2 !important;
+        }

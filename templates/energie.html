@@ -8,6 +8,12 @@
     <div class="introduction">
         <i class="fa fa-lightbulb-o"></i> Découvrez nos études de cas sur l'innovation énergétique!
     </div>
+    <div class="search-container " >
+        <div class="container">
+            <label for="">Rechercher : </label>
+            <input type="text" class="form-control" id="search-bar" placeholder="Rechercher un projet...">
+        </div>
+    </div>
     <div class="main-content">
         <div class="sector" id="sector1">
             <h2>Microgrids: Etude sur les perspectives stratégiques de l'énergie</h2>
@@ -44,7 +50,7 @@
                 <button type="submit" class="delete-case">&times;</button>
             </form>
             <h2>{{ project.title }} par {{ project.full_name }}</h2>
-            <a href="{{ url_for('static', filename='uploads/' + project.file_path) }}" download="{{ project.file_path }}"><i class="fa fa-download"></i>Télécharger PDF</a>
+            <a href="{{ url_for('download_file', filename=project.file_path) }}"><i class="fa fa-download"></i>Télécharger PDF</a>
             <button class="quiz" data-url="{{ url_for('quiz', id=project.id) }}">Quiz</button>
             <button class="case-study" onclick="window.location.href='{{ url_for('casia', project_id=project.id) }}'">Étude de Cas</button>
             <div class="case-content"></div>
@@ -229,5 +235,25 @@
         };
     </script>
     <script src="https://www.chatbase.co/embed.min.js" defer></script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBar = document.getElementById('search-bar');
+            const sectorBlocks = document.querySelectorAll('.sector');
+
+            searchBar.addEventListener('input', function() {
+                const query = searchBar.value.toLowerCase();
+                sectorBlocks.forEach(function(block) {
+                    const title = block.querySelector('h2').textContent.toLowerCase();
+                    if (title.includes(query)) {
+                        block.style.display = 'block';
+                    } else {
+                        block.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 
 {% endblock %}

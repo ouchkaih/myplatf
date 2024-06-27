@@ -53,16 +53,3 @@ class Reply(db.Model):
 
     user = db.relationship('User', back_populates='replies')
     comment = db.relationship('Comment', back_populates='replies')
-
-
-class CaseStudy(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100))
-    pdf_file_text = db.Column(db.Text)
-    pdf_file_path = db.Column(db.Text)
-    description = db.Column(db.Text)
-    author_id = db.Column(db.Integer, db.ForeignKey(User.id))
-    date_posted = db.Column(db.DateTime, default=datetime.utcnow)
-    tag = db.Column(db.String(256))
-    content = db.Column(db.String(1024))
-

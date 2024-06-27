@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, url_for, redirect, flash, session
+from flask import Flask, render_template, request, url_for, redirect, flash, session, send_from_directory
 from werkzeug.utils import secure_filename
 import openai
 import os
 from auth import auth as auth_blueprint
-from models import db, CaseStudy, Comment, User, Project
+from models import db, Comment, User, Project
 from forums import forums
 from flask_login import UserMixin, LoginManager, current_user, login_user, logout_user
 from ia import extract_text_from_pdf, generate_case_study as ai_generate_case_study , generate_quiz
@@ -11,9 +11,7 @@ from forms import CaseStudyCreationForm, CommentCreationForm
 import tiktoken
 from dotenv import load_dotenv
 
-from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy as sa
-import sqlalchemy.orm as so
 load_dotenv()
 
 app = Flask(__name__, template_folder='templates')
@@ -28,9 +26,8 @@ db.init_app(app)
 login_manager = LoginManager(app)
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-
 # Fonction pour compter les tokens
-def count_tokens(messages, model="gpt-3.5-turbo"):
+def count_tokens(messages, model="gpt-4o"):
     encoding = tiktoken.encoding_for_model(model)
     num_tokens = 0
     for message in messages:
@@ -38,7 +35,7 @@ def count_tokens(messages, model="gpt-3.5-turbo"):
     return num_tokens
 
 # Fonction pour tronquer le texte
-def truncate_text(text, max_tokens, model="gpt-3.5-turbo"):
+def truncate_text(text, max_tokens, model="gpt-4o"):
     encoding = tiktoken.encoding_for_model(model)
     tokens = encoding.encode(text)
     if len(tokens) > max_tokens:
@@ -59,6 +56,8 @@ def favicon():
 
 @app.route('/')
 def home():
+    if not session.get('username'):
+        return redirect(url_for('connexion'))  # Redirect to the login page if not logged in
     return render_template('acceuil.html')
 
 @app.route('/acceuil')
@@ -205,56 +204,6 @@ def delete_project(id):
     return redirect(url_for('energie'))
 
 
-
-@app.route('/case-studies')
-def case_studies():
-    case_studies = CaseStudy.query.order_by(CaseStudy.date_posted)
-    case_study_form = CaseStudyCreationForm()
-    return render_template('case-studies.html', case_studies=case_studies, case_study_form=case_study_form, current_user=current_user)
-
-@app.route('/create-case-study', methods=['POST'])
-def create_case_study():
-    if not current_user.is_authenticated:
-        flash('Veuillez vous connecter', 'error')
-        return redirect(url_for('login'))
-    
-    form = CaseStudyCreationForm()
-    f = form.pdf_file.data
-    filename = secure_filename(f.filename)
-    path = os.path.join(app.instance_path, "uploads", filename)
-    f.save(path)
-    text = extract_text_from_pdf(path)
-    content = ai_generate_case_study(text)
-    study = CaseStudy(
-        title=form.title.data,
-        pdf_file_text=text, 
-        pdf_file_path=path, 
-        tag=form.tag.data, 
-        description=form.description.data,
-        author_id=current_user.id,
-        content=content
-    )
-    db.session.add(study)
-    db.session.commit()
-
-    return redirect(url_for('case_studies'))
-    
-@app.route('/case-study/<int:id>', methods=['GET', 'POST'])
-def case_study(id):
-    case_study = CaseStudy.query.get_or_404(id)
-    all_comments = Comment.query.order_by(Comment.timestamp)
-    comments = [comment for comment in all_comments if comment.post_id == id]
-    comment_form = CommentCreationForm()
-    return render_template('case-study.html', case_study=case_study, comments=comments, comment_form=comment_form, current_user=current_user)
-
-@app.route('/case-study/<int:id>/delete')
-def delete_case_study(id):
-    case_study = CaseStudy.query.get_or_404(id)
-    db.session.delete(case_study)
-    db.session.commit()
-    return redirect(url_for('case_studies'))
-
-
 @app.route('/case-study/<int:id>/create-comment', methods=['POST'])
 def create_comment(id):
     if not current_user.is_authenticated:
@@ -275,15 +224,6 @@ def delete_comment(case_study_id, comment_id):
     db.session.commit()
     return redirect(url_for('case_study', id=case_study_id))
 
-@app.route('/case-study/<int:id>/take-quiz')
-def take_quiz(id):
-    if not current_user.is_authenticated:
-        flash('Veuillez vous connecter', 'error')
-
-    case_study = CaseStudy.query.get_or_404(id)
-
-    return render_template('quiz.html', id=id, case_study=case_study)
-
 @app.route('/case-study/<int:id>/take-quiz/questions')
 def quiz_questions(id):
     if not current_user:
@@ -294,6 +234,10 @@ def quiz_questions(id):
         return "Study not found f"
 
     return generate_quiz(study.case_study)
+
+@app.route('/download/<path:filename>')
+def download_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
 
 if __name__ == "__main__":
     with app.app_context():

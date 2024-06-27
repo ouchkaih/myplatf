@@ -10,12 +10,18 @@
             <h1>Forums List</h1>
             <ul>
                 {% for forum in forums %}
-                <li>
+                <li class="forum-container">
                     <a href="{{ url_for('forums.forum_details', forum_id=forum.id) }}" class="underline-none">
                         <h3 class="forum-title">{{ forum.title }}</h3>
                         <h3 class="forum-user">{{ forum.user.username }}</h3>
                         <!-- <img src="{{ forum.image_url }}" alt="{{ forum.title }} Image"> -->
                     </a>
+
+                    <div>
+                        <form action="{{ url_for('forums.delete_forum', id=forum.id)}}" method="post">
+                            <button type="submit" class="delete-forum-btn">&times;</button>
+                        </form>
+                    </div>
                 </li>
                 {% endfor %}
             </ul>

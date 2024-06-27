@@ -87,6 +87,19 @@ def add_reply(forum_id, comment_id):
     
     return render_template('add_reply.html', form=form, forum=forum, comment=comment)
 
+
+@forums.route('/delete_forum/<int:id>', methods=['POST'])
+def delete_forum(id):
+    forum = Forum.query.get_or_404(id)
+    if forum.user_id != session.get('user_id'):
+        flash('Vous ne pouvez pas supprimer ce projet.', 'error')
+        return redirect(url_for('forums.list_forums'))
+    
+    db.session.delete(forum)
+    db.session.commit()
+    flash('Projet supprimé avec succès.', 'success')
+    return redirect(url_for('forums.list_forums'))
+
 # Route to serve uploaded PDF files
 @forums.route('/uploads/<filename>')
 def uploaded_file(filename):

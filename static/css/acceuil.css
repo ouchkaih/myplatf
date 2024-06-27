@@ -709,15 +709,15 @@ body {
 }
 
 .btn-industrie {
-  background-color: #4c536c; /* Bleu */
+  background-color: #4c536c !important; /* Bleu */
 }
 
 .btn-energie {
-  background-color: #a2563f; /* Vert */
+  background-color: #a2563f !important; /* Vert */
 } 
 
 .btn-devlog {
-  background-color: #3e6631; /* Rouge */
+  background-color: #3e6631 !important; /* Rouge */
 }
 
 .btn:hover {
